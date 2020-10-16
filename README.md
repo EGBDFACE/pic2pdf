@@ -31,6 +31,17 @@ a simple tool for convert multiple pictures to a pdf file. you can click [**here
 
   [Upload](https://github.com/ant-design/ant-design/blob/master/components/upload/index.zh-CN.md), to upload pics and preview
 
+### Browser Compatibility
+
+||谷歌Chrome|火狐Firefox|苹果Safari|微软Edge|IE|
+|---|-----|----|----|-----|---|
+|Windows|✔️|✔️|-|✔️| ❌ 蛤？|
+|Mac OS|✔️|✔️|☑️|☑️|-|
+|Iphone|?|?| ? | - |-|
+|Android|?|?|?| -|-|
+️️
+> ✔️ 运行良好 ☑️ 部分支持 ❌ 不支持 ? 未测试
+
 ### Contact
 
 if you have any suggestions or problem, please contact me through <a href="mailto:3212497319@qq.com">Email</a>.
