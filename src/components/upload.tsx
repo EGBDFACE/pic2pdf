@@ -89,7 +89,10 @@ export class PicturesWall extends React.Component {
 
   _getPdfData = async (): Promise<IPDFPageObj[]> => {
     const { fileList } = this.state
-    if (fileList.length < 1) return []
+    if (fileList.length < 1) {
+      message.info('please upload one pic at lease')
+      return []
+    }
     const pdfData: IPDFPageObj[] = []
     for (let i=0; i<fileList.length; i++) {
       const transImgData = await getBase64(fileList[i])
