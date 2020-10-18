@@ -1,32 +1,46 @@
 import React from 'react';
 import { Button, Input, Upload, Modal, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { DownloadOutlined, FilePdfOutlined, PlusOutlined } from '@ant-design/icons';
 import { UploadFile, RcCustomRequestOptions } from 'antd/lib/upload/interface';
 
 import { jsPDF } from 'jspdf';
 
-import { fileObjToFile } from '../util/tools'
+import { fileObjToFile, getCommonString, getFileName } from '../util/tools'
 import { IPDFPageObj } from '../util/type';
 
-function getBase64(file: File | Blob | undefined) : Promise<IPDFPageObj> | undefined{
+import './upload.css';
+
+function getBase64(file: File | Blob | undefined) : Promise<IPDFPageObj | undefined>{
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     if (!file) {
       console.log(file);
-      message.error('unknown type file');
-      return;
+      message.error('file load fail');
+      return resolve()
     }
     reader.readAsDataURL(file);
     reader.onload = () => {
       const img = new Image()
       img.src = String(reader.result)
-      img.onload = function (){
-        const that : any = this
-        return resolve({
-          imgUrlBase64 : String(reader.result),
-          imgWidth: that.width,
-          imgHeight: that.height
-        });
+      img.onload = () => {
+        const resolveResult = {
+          imgUrlBase64: String(reader.result),
+          imgWidth: img.width,
+          imgHeight: img.height,
+          canvasEle: undefined
+        }
+        const canvasEle = document.createElement('canvas');
+        const canvasContext = canvasEle.getContext('2d');
+        canvasEle.width=img.width;
+        canvasEle.height=img.height;
+        if (canvasContext) {
+          canvasContext.drawImage(img, 0, 0);
+          return resolve({
+            ...resolveResult,
+            canvasEle
+          })
+        }
+        return resolve(resolveResult);
       }
     }
     reader.onerror = error => reject(error);
@@ -39,7 +53,7 @@ export class PicturesWall extends React.Component {
     previewImage: '',
     previewTitle: '',
     fileList: [],
-    pdfFileName: 'new'
+    pdfFileName: ''
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -78,13 +92,16 @@ export class PicturesWall extends React.Component {
   // 自定义上传逻辑
   handleUpload = (param: RcCustomRequestOptions) => {
     const file: UploadFile = param.file
-    const { fileList } = this.state
+    const { fileList, pdfFileName } = this.state
     const uidList = fileList.map((v: UploadFile) => v.uid)
     if (uidList.includes(file.uid)) return
     if (!fileObjToFile(file)) return;
-    file.originFileObj = fileObjToFile(file)
-    console.log(file)
-    this.setState({ fileList: [...fileList, file] })
+    file.originFileObj = fileObjToFile(file);
+    const commonName = pdfFileName ? getCommonString(pdfFileName, getFileName(file.name)) : getFileName(file.name);
+    this.setState({ 
+      fileList: [...fileList, file],
+      pdfFileName: commonName.trim()
+    })
   }
 
   _getPdfData = async (): Promise<IPDFPageObj[]> => {
@@ -111,7 +128,12 @@ export class PicturesWall extends React.Component {
       const pdf = new jsPDF('p', 'px', [pdfData[0].imgWidth, pdfData[0].imgHeight])
       pdfData.forEach((v,i) => {
         if (i !== 0) pdf.addPage([v.imgWidth, v.imgHeight])
-        pdf.addImage(v.imgUrlBase64, 0, 0, v.imgWidth, v.imgHeight)
+        if (v.canvasEle) {
+          pdf.addImage(v.canvasEle, 0, 0, v.imgWidth, v.imgHeight)
+        } else {
+          message.warning('webp pic may have some unknow problem here, please change chrome to have a try')
+          pdf.addImage(v.imgUrlBase64, 0, 0, v.imgWidth, v.imgHeight);
+        }
       })
       pdf.save(this.state.pdfFileName)
     } catch (err) {
@@ -122,11 +144,11 @@ export class PicturesWall extends React.Component {
 
   handleFileName = (e: any) => {
     e.persist();
-    this.setState({ pdfFileName: e.target.value || 'new' })
+    this.setState({ pdfFileName: e.target.value })
   }
 
   render() {
-    const { previewVisible, previewImage, fileList, previewTitle } = this.state;
+    const { previewVisible, previewImage, fileList, previewTitle, pdfFileName } = this.state;
     const uploadButton = (
       <div>
         <PlusOutlined />
@@ -136,6 +158,7 @@ export class PicturesWall extends React.Component {
     return (
       <>
         <Upload
+          className="pic-upload"
           multiple
           listType="picture-card"
           fileList={fileList}
@@ -156,10 +179,20 @@ export class PicturesWall extends React.Component {
         <div>          
           <Input placeholder="pdf filename"
             maxLength={25}
-            style={{width: '150px', marginRight: '10px'}}
+            value={pdfFileName}
+            size="large"
+            prefix={<FilePdfOutlined />}
+            className="pdf-filename-input"
+            // style={{width: '150px', marginRight: '10px'}}
             onChange={this.handleFileName}
+            onPressEnter={this.handleOutputWithImg}
           />
-          <Button type="primary" onClick={this.handleOutputWithImg}>Get PDF</Button>
+          <Button type="primary"
+            onClick={this.handleOutputWithImg}
+            shape="round"
+            icon={<DownloadOutlined />}
+            size="large"
+            >Get PDF</Button>
         </div>
       </>
     );

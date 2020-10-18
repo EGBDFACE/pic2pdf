@@ -1,21 +1,19 @@
 ### Pic2PDF
 
-a simple tool for convert multiple pictures to a pdf file. you can click [**here**](https://egbdface.github.io/pic2pdf/) to use it.
+an **ONLINE** tool for convert multiple pictures to a pdf file. you can click [**HERE**](https://egbdface.github.io/pic2pdf/) to use it.
 
 ### Main Function
 
-- No Uploads, conversion using the browser iteself
-
+- **No Uploads**, conversion using the browser iteself
 - Drag or click to upload pics
-
 - Upload multiple pics at once 
 - Preview the pic and Delete it
-- Custom filename ( default 'new')
+- Custom filename ( default common filename or 'generated.pdf')
 - Supported Pic File Format :
   - JPG/JPEG
   - PNG
   - BMP
-  - Webp (working on it)
+  - Webp
 
 ### Online Address
 
@@ -33,14 +31,14 @@ a simple tool for convert multiple pictures to a pdf file. you can click [**here
 
 ### Browser Compatibility
 
-||谷歌Chrome|火狐Firefox|苹果Safari|微软Edge|IE|
+||Chrome|Firefox|Safari|Edge|IE|
 |---|-----|----|----|-----|---|
-|Windows|✔️|✔️|-|✔️| ❌ 蛤？|
-|Mac OS|✔️|✔️|☑️|☑️|-|
+|Windows|✔️|✔️|-|✔️|?|
+|Mac OS|✔️|✔️|❌|-|-|
 |Iphone|?|?| ? | - |-|
 |Android|?|?|?| -|-|
 ️️
-> ✔️ 运行良好 ☑️ 部分支持 ❌ 不支持 ? 未测试
+> ✔️ good ☑️ partially ❌ unsupported ? not test
 
 ### Contact
 

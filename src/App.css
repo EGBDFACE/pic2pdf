@@ -40,3 +40,14 @@
 .ant-upload-list-item-info::before {
   left: 0;
 }
+
+.tipInfo {
+  text-align: center;
+  margin: 200px 0 20px;
+}
+
+.tipInfoContent {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}

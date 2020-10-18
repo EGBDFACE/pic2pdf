@@ -1,0 +1,10 @@
+.pic-upload .ant-upload-select-picture-card {
+  width: 80% !important;
+  height: 200px !important;
+  display: block !important;
+  margin: 10px auto !important;
+}
+.pdf-filename-input {
+  width: 150px !important;
+  margin-right: 10px !important;
+}
